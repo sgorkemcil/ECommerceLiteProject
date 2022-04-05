@@ -83,6 +83,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Repositories.cs" />
     <Compile Include="Repository\RepositoryBase.cs" />
+    <Compile Include="Settings\SiteSettings.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ECommerceLiteDAL\ECommerceLiteDAL.csproj">
@@ -98,9 +99,7 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Settings\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
