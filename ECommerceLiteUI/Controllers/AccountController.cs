@@ -63,6 +63,8 @@ namespace ECommerceLiteUI.Controllers
                     ModelState.AddModelError("", "Bu email ile daha önceden sisteme kayıt yapılmıştır.");
                     return View(model);
                 }
+                // aktivasyon kodu üretelim
+                var activationCode = Guid.NewGuid().ToString().Replace("-", "");
 
                 //Artık sisteme kayıt olabilir...
                 var newUser = new ApplicationUser()
@@ -70,10 +72,9 @@ namespace ECommerceLiteUI.Controllers
                     Name = model.Name,
                     Surname = model.Surname,
                     Email = model.Email,
-                    UserName = model.TCNumber
+                    UserName = model.TCNumber,
+                    ActivationCode=activationCode
                 };
-                // aktivasyon kodu üretelim
-                var activationCode = Guid.NewGuid().ToString().Replace("-", "");
                 //artık ekleyelim
 
                 var createResult = myUserManager.CreateAsync(newUser, model.Password);
@@ -119,12 +120,80 @@ namespace ECommerceLiteUI.Controllers
 
             }
             catch (Exception ex)
-            {
 
+            {
+                //To Do:Loglama yapılacak
+                ModelState.AddModelError("", "Beklenmedik bir hata oluştu!Tekrar deneyiniz!");
+                return View(model);
                 
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult>Activation(string code)
+        {
+            try
+            {
+                //select*from AspNetUsers where Activationcode='sdkfjsdlfsdfsdfklsdfk'
+                var user =
+                    myUserStore.Context.Set<ApplicationUser>()
+                    .FirstOrDefault(x => x.ActivationCode == code);
+                if (user==null)
+                {
+                    ViewBag.ActivationResult = "Aktivasyon işlemi başarısız!sistem yöneticisinden yeniden email isteyiniz..";
+                    return View();
+                }
+                //user bulundu !
+                if (user.EmailConfirmed)//zaten aktifleşmiş mi?
+                {
+                    ViewBag.ActivationResult = "Aktivasyon işlemimiz zaten gerçekleşmiştir!Giriş yaparak sistemi kullanabilirsiniz.";
+                    return View();
+                }
+                user.EmailConfirmed = true;
+                await myUserStore.UpdateAsync(user);
+                await myUserStore.Context.SaveChangesAsync();
+                //Bu kişi artık aktif.
+                PassiveUser passiveUser = myPassiveUserRepo.AsQueryable().FirstOrDefault(x => x.UserId == user.Id);
+                if (passiveUser!=null)
+                {
+                    //TODO:PassiveUser tablosuna TargetRole ekleme işlemini daha sonra yapalım.Kafalarındaki soru işareti gittikten sonra ...
+                    passiveUser.IsDeleted = true;
+                    myPassiveUserRepo.Update();
 
+                    Customer customer = new Customer()
+                    {
+                        UserId = user.Id,
+                        TCNumber = passiveUser.TCNumber,
+                        IsDeleted = false,
+                        LastActiveTime = DateTime.Now
+                    };
+
+                    await myCustomerRepo.InsertAsync(customer);
+                    //Aspnetuserrole tablosuna bu kişinin artık customer mertebesine ulaştığını bildirelim 
+                    myUserManager.RemoveFromRole(user.Id, Roles.Passive.ToString());
+                    myUserManager.AddToRole(user.Id, Roles.Customer.ToString());
+                    //işlem bitti başarı old.dair mesajı gönderelim .
+
+                    ViewBag.ActivationResukt = $"Merhaba Sayın {user.Name}{user.Surname},aktifleştirme işleminiz başarılıdır!Giriş yapıp sistemi kullanabilirsiniz";
+                    return View();
+                    
+
+
+                }
+                //NOT:Müsait olduğunuzda bireysel beyin fırtınası yapabilirsiniz.
+                //Kendinize şu soruyu sorun!PassiveUser null gelirse nasıl bir yol izlenebilir??
+                //PassiveUser null gelmesi çok büyük bir problem mi ?
+                //Customerda bu kişi kayıtlı mı ?Custumerda bir problem yok...Customerda kayıtlı değilse PROBLEM VAR !
+
+                return View();
+            }
+            catch (Exception ex)
+            {
+
+                //TODO:loglama yapılacak
+                ModelState.AddModelError("", "Beklenmedik bir hata oluştu!");
+                return View();
+            }
+        }
     }
 }
