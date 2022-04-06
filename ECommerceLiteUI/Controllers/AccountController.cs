@@ -274,6 +274,137 @@ namespace ECommerceLiteUI.Controllers
                 return View(model);
             }
         }
+
+        [HttpGet]
+        [Authorize]
+        public ActionResult UpdatePassword()
+        {
+            var user = myUserManager.FindById(HttpContext.User.Identity.GetUserId());
+            if (user!=null)
+            {
+                ProfileViewModel model = new ProfileViewModel()
+                {
+                    Email = user.Email,
+                    Name = user.Name,
+                    Surname = user.Surname,
+                    TCNumber = user.UserName
+
+                };
+                return View(model);
+             }
+            ModelState.AddModelError("", "Sisteme giriş yapmamız gerekmektedir.");
+            return View();
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult>UpdatePassword(ProfileViewModel model)
+        {
+            try
+            { 
+                //mevcut login olmuş kişinin ID'sini veriyor.0 id ile manager kişiyi db'den bulup getiriyor.
+                var user = myUserManager.FindById(HttpContext.User.Identity.GetUserId());
+
+                //Ya şifreler aynısıydı?
+                if (myUserManager.PasswordHasher
+                    .VerifyHashedPassword(user.PasswordHash,model.NewPassword)
+                    ==PasswordVerificationResult.Success)
+                {
+                    //Bu kişi mevcut şifresinin aynısını yeni şifre olarak yutturmaya çalışıyor.
+                    ModelState.AddModelError("", "Yeni şifreniz mevcut şifrenizle aynı olmasın madem değiştirmek istedin!!");
+                    return View(model);
+                }
+                //Yeni şifre ile şifre tekrarı uyuşuyor mu ?
+                if (model.NewPassword!=model.ConfirmPassword)
+                {
+                    ModelState.AddModelError("", "Şifreler uyuşmuyor!");
+                    return View(model);
+                }
+                //Acaba mevcut şifresini doğru yazdı mı ?
+                var checkCurrent = myUserManager.Find(user.UserName, model.Password);
+                if (checkCurrent==null)
+                {
+                    //Mevcut şifresini yanlış yazmış!
+                    ModelState.AddModelError("", "Mevuct şifrenizi yanlış girdiğiniz için yeni şifre oluşturma işleminiz başarısız oldu !Tekrar deneyiniz");
+                    return View(model);
+
+                }
+                //Artık şifresini değiştirebilir.
+                await myUserStore.SetPasswordHashAsync(user,myUserManager.PasswordHasher.HashPassword(model.NewPassword));
+
+                await myUserManager.UpdateAsync(user);
+                //Şifre değiştirdikten sonra sistemden atalım!
+                TempData["PasswordUpdated"]="Parolanız değiştirildi";
+                HttpContext.GetOwinContext().Authentication.SignOut();
+                return RedirectToAction("Login", "Account",
+                    new { email = user.Email });
+
+                
+
+            }
+            catch (Exception ex)
+            {
+                //ex loglancak
+                ModelState.AddModelError("", "Beklenmedik hata oldu!Tekrar deneyiniz");
+                return View(model);
+            }
+        }
+
+        [HttpGet]
+        public ActionResult RecoverPassword()
+        {
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> RecoverPassword(ProfileViewModel model)
+        {
+            try
+            {
+                //Şifresini unutmuş.
+                //1.Yöntem
+                //var user = myUserStore.Context.Set<ApplicationUser>()
+                //    .FirstOrDefault(x => x.Email == model.Email);
+
+                //2.yöntem
+                var user = myUserManager.FindByEmail(model.Email);
+                if (user==null)
+                {
+                    ViewBag.RecoverPassword = "Sistemde böyle bir kullanıcı olmadığı için size yeni şifre gönderemiyoruz!lütfen önce sisteme kayıt olunuz ";
+                    return View(model);
+                }
+                //Random şifre oluştur!
+                var randomPassword = CreateRandomNewPassword();
+                await myUserStore.SetPasswordHashAsync(user, myUserManager.PasswordHasher.HashPassword(randomPassword));
+                await myUserStore.UpdateAsync(user);
+
+
+                //email gönderilecek
+                //site adresini alıyoruz.
+                var siteURL = Request.Url.Scheme + Uri.SchemeDelimiter + Request.Url.Host +
+                    (Request.Url.IsDefaultPort ? "" : ":" + Request.Url.Port);
+                await SiteSettings.SendMail(new MailModel()
+                {
+                    To = user.Email,
+                    Subject = "EcommerceLite-Şifre Yenilendi",
+                    Message = $"Merhaba{user.Name}{user.Surname}," +
+                    $"<br/>Yeni şifreniz:<b>{randomPassword} </b> Sisteme Giriş Yapmak için <b>" +
+                    $"<a href='{siteURL}/Account/Login?" +
+                    $"email={user.Email}'>BURAYA</a></b> tıklayınız..."
+                });
+                //işlemler bitti...
+                ViewBag.RecoverPassword = "Email adresinize şifreniz gönderilmiştir.";
+                    return View();
+            }
+            catch (Exception ex)
+            {
+                //Todo ex loglanacak
+                ViewBag.RecoverResult = "Sistemsel bir hata oluştu!Tekrar deneyiniz!";
+                return View(model);
+                
+            }
+        }
     }
 
 }
