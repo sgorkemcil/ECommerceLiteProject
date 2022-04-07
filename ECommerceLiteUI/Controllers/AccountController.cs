@@ -452,7 +452,7 @@ namespace ECommerceLiteUI.Controllers
                 {
                     ViewBag.Result = "Sistemi kullanmak için aktivasyon yapmanız gerekmektedir!Emailinize gönderilen aktivasyon linkine tıklayınız!";
                     //TO DO :Zaman Kalırsa Email Gönder adında küçük bir butun burda olsun
-                    return View();
+                    return View(model);
 
                 }
                 //Artık login olabilir
@@ -465,9 +465,15 @@ namespace ECommerceLiteUI.Controllers
                 }, userIdentity
                     );
 
+                //2. yol
+                //AuthenticationProperties authProperties = new AuthenticationProperties();
+                //authProperties.IsPersistent = model.RememberMe;
+                //authManager.SignIn(authProperties, userIdentity);
+
+
                 //Giriş yaptı!Peki nereye gidicek?
                 //Herkes rolüne uygun default bir sayfaya gitsin 
-                if(user.Roles.FirstOrDefault().RoleId==myRoleManager.FindByName(Enum.GetName(typeof(Roles),Roles.Admin)).Id)
+                if (user.Roles.FirstOrDefault().RoleId==myRoleManager.FindByName(Enum.GetName(typeof(Roles),Roles.Admin)).Id)
                 {
                     return RedirectToAction("Dashboard", "Admin");
                 }
@@ -492,6 +498,7 @@ namespace ECommerceLiteUI.Controllers
                     //ÖRN:return RedicetToAction("UserProfile","Account");
                     return RedirectToAction(url[2], url[1]);
                 }
+
 
             }
             catch (Exception ex)
