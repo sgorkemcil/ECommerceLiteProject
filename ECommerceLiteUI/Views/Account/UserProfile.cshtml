@@ -5,7 +5,7 @@
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
 
-<div class="row margin-vert-30">
+<div class="row margin-vert-30" margin-left:25%;margin-right:25%>
     <div class="col-6 offset-3">
         @using (Html.BeginForm("UserProfile", "Account", FormMethod.Post,
             new { @class = "form-horizontal" }))
@@ -28,13 +28,13 @@
                     güncelle butonuna tıklayabilirsiniz...
                 </h4>
             }
-            <div class="form-group col-lg-4 offset-4">
+            <div class="form-group col-4 offset-4">
                 @*TO DO:Proje bitince ekleyebiliriz.*@
                 @*<div class="form-group">
                         @Html.Label("Email Adresiniz")
                         @Html.TextAreaFor(x => x.Email, new {@class="form-control"})
                     </div> <br/> *@
-                <div class="form-gorup">
+                <div class="form-group">
                     @Html.Label("Adınız")
                     @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
                 </div>
@@ -73,13 +73,14 @@
         }
     </div>
 </div>
-@section Scripts{
+@section ElectroScripts {
     <script>
         function Gotoupdatepasswordpage() {
-            window.location.assign("/Account/UpdatePassword")
+            wind.location.assign("/Account/UpdatePasswordpage")
         }
     </script>
-    
-    }
+}
+
+
 
 
