@@ -175,7 +175,7 @@ namespace ECommerceLiteUI.Controllers
                     myUserManager.AddToRole(user.Id, Roles.Customer.ToString());
                     //işlem bitti başarı old.dair mesajı gönderelim .
 
-                    ViewBag.ActivationResukt = $"Merhaba Sayın {user.Name}{user.Surname},aktifleştirme işleminiz başarılıdır!Giriş yapıp sistemi kullanabilirsiniz";
+                    ViewBag.ActivationResult = $"Merhaba Sayın {user.Name}{user.Surname},aktifleştirme işleminiz başarılıdır!Giriş yapıp sistemi kullanabilirsiniz";
                     return View();
                     
 
@@ -364,12 +364,12 @@ namespace ECommerceLiteUI.Controllers
             try
             {
                 //Şifresini unutmuş.
-                //1.Yöntem
-                //var user = myUserStore.Context.Set<ApplicationUser>()
-                //    .FirstOrDefault(x => x.Email == model.Email);
 
-                //2.yöntem
-                var user = myUserManager.FindByEmail(model.Email);
+                var user = myUserStore.Context.Set<ApplicationUser>()
+                    .FirstOrDefault(x => x.Email == model.Email);
+
+
+
                 if (user==null)
                 {
                     ViewBag.RecoverPassword = "Sistemde böyle bir kullanıcı olmadığı için size yeni şifre gönderemiyoruz!lütfen önce sisteme kayıt olunuz ";
@@ -401,7 +401,7 @@ namespace ECommerceLiteUI.Controllers
             catch (Exception ex)
             {
                 //Todo ex loglanacak
-                ViewBag.RecoverResult = "Sistemsel bir hata oluştu!Tekrar deneyiniz!";
+                ViewBag.RecoverPasswordResult = "Sistemsel bir hata oluştu!Tekrar deneyiniz!";
                 return View(model);
                 
             }
