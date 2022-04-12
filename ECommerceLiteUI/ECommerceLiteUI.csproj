@@ -155,8 +155,11 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -198,6 +201,7 @@
     <Content Include="AdminLTE\dist\css\alt\adminlte.plugins.css" />
     <Content Include="AdminLTE\dist\css\alt\adminlte.plugins.min.css" />
     <Content Include="AdminLTE\dist\img\2.png" />
+    <Content Include="AdminLTE\dist\img\303Logo.png" />
     <Content Include="AdminLTE\dist\img\4.png" />
     <Content Include="AdminLTE\dist\img\AdminLTELogo.png" />
     <Content Include="AdminLTE\dist\img\avatar.png" />
@@ -2347,10 +2351,13 @@
     <Content Include="Views\Account\UpdatePassword.cshtml" />
     <Content Include="Views\Account\UserProfile.cshtml" />
     <Content Include="Views\Shared\_LayoutAdmin.cshtml" />
+    <Content Include="Views\Product\ProductList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Admin\" />
     <Folder Include="Views\Base\" />
+    <Folder Include="Views\Category\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
