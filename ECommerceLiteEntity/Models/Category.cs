@@ -27,7 +27,7 @@ namespace ECommerceLiteEntity.Models
         [ForeignKey("BaseCategoryId")]
         public virtual Category BaseCategory { get; set; }
 
-        public virtual List<Category>SubCategoryList { get; set; }
+        public virtual List<Category>CategoryList { get; set; }
 
         //Her ürünün bir kategorisi olur cumlesınden yola cıkarak Productta tanımlanan ilişkiyi burada karşılayalım
         /*1'e sonsuz ilişki nedeniyle yeni bir kategorinin birden cok urunu olabilir mantıgını karsılamak amacıyla  burda
