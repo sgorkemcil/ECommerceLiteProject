@@ -8,6 +8,7 @@ using ECommerceLiteBLL.Repository;
 using ECommerceLiteBLL.Settings;
 using ECommerceLiteEntity.Models;
 using ECommerceLiteUI.Models;
+using Mapster;
 
 namespace ECommerceLiteUI.Controllers
 {
@@ -84,23 +85,33 @@ namespace ECommerceLiteUI.Controllers
                     return View(model);
                 }
 
-                
+
 
                 //Ürün tabloya kayıt olacak .
                 //TODO:Mapleme yapılacak
 
-                Product product = new Product()
-                {
-                    ProductName=model.ProductName,
-                    Description=model.Description,
-                    ProductCode=model.ProductCode,
-                    CategoryId=model.CategoryId,
-                    Discount=model.Discount,
-                    Quantity=model.Quantity,
-                    RegisterDate=DateTime.Now,
-                    Price=model.Price
+                //Product product = new Product()
+                //{
+                //    ProductName=model.ProductName,
+                //    Description=model.Description,
+                //    ProductCode=model.ProductCode,
+                //    CategoryId=model.CategoryId,
+                //    Discount=model.Discount,
+                //    Quantity=model.Quantity,
+                //    RegisterDate=DateTime.Now,
+                //    Price=model.Price
 
-                };
+                //};
+                //mapleme yapıldı
+                //Mapster paketi indirildi.Mapster bir objedeki verileri diğer bir objeye zahmetsizce aktarır.
+                //Aktarım yapabilmesi için A objesiyl B objesinin içindeki propertylerin isimleri ve tipleri birebir aynı olmalıdır.
+                //bu projede mapster kullandık
+                //Core projesınde daha profesyenel olan AutoMapper'ı kullanacagız
+                //bir dto objesinin içindeki verileri alır asıl objenin içine aktarır.Asıl objenın verılerını dto objesının ıcındekı propertylere aktarır.
+                Product product = model.Adapt<Product>();
+                //Product product2=model.Adapt<ProductViewModel,Product>();
+
+
                 int insertResult = myProductRepo.Insert(product);
                 if(insertResult>0)
                 {
