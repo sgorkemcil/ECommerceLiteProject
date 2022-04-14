@@ -78,9 +78,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Migrations\202204041148575_initialDB.cs" />
-    <Compile Include="Migrations\202204041148575_initialDB.designer.cs">
-      <DependentUpon>202204041148575_initialDB.cs</DependentUpon>
+    <Compile Include="Migrations\202204140707259_ProductPictureTableUpdated.cs" />
+    <Compile Include="Migrations\202204140707259_ProductPictureTableUpdated.designer.cs">
+      <DependentUpon>202204140707259_ProductPictureTableUpdated.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="MyContext.cs" />
@@ -97,8 +97,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Migrations\202204041148575_initialDB.resx">
-      <DependentUpon>202204041148575_initialDB.cs</DependentUpon>
+    <EmbeddedResource Include="Migrations\202204140707259_ProductPictureTableUpdated.resx">
+      <DependentUpon>202204140707259_ProductPictureTableUpdated.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
