@@ -22,9 +22,22 @@ namespace ECommerceLiteUI.Controllers
 
        //Bu controllera Admin gibi yetkili kişiler erişecektir.
        //Buarada ürünlerin listelenmesi ,ekleme,silme,güncelleme işlemleri yapılacaktır.
-        public ActionResult ProductList()
+        public ActionResult ProductList(string search="")
         {
-            return View();
+            List<Product>allProducts = new List<Product>();
+           
+            //var allProducts = myProductRepo.GetAll();
+            if (string.IsNullOrEmpty(search))
+            {
+             allProducts = myProductRepo.GetAll();
+            }
+            else
+            {
+                allProducts = myProductRepo.GetAll()
+                    .Where(x => x.ProductName.Contains(search) || x.Description.Contains(search)).ToList();
+            }
+            return View(allProducts);
+
         }
         [HttpGet]
         public ActionResult Create()
