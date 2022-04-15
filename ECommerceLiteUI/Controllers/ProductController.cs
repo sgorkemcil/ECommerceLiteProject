@@ -28,6 +28,36 @@ namespace ECommerceLiteUI.Controllers
             //Alt Kategorileri repo aracılığıyla dbden çektik
             ViewBag.SubCategories = myCategoryRepo
                 .AsQueryable().Where(x => x.BaseCategoryId != null).ToList();
+            //Sayfaya bazı bilgiler göndereceğiz
+            var totalProduct = myProductRepo.GetAll().Count;//toplam ürün sayısı
+            ViewBag.TotalProduct = totalProduct;//toplam ürün sayısını sayfaya göndereceğiz
+            ViewBag.TotalPages = (int)Math.Ceiling(totalProduct / (double)pageSize);
+
+            //toplamürün/sayfada gösterilecek üründen kaç sayfa olduğu bilgisi
+            ViewBag.PageSize = pageSize;//Her sayfada kaç ürün gözükecek bilgisini html sayfasına gönderelim
+
+            //frenleme
+            //1.yöntem
+            if(page<1)
+            {
+                page = 1;
+            }
+            if (page>ViewBag.TotalPages)
+            {
+                page = ViewBag.TotalPages;
+            }
+            //2.yöntem
+            page = page < 1 ? //eğer page 1'den küçükse 
+                       1 :    //page'in değerini 1 yap
+                       page > ViewBag.TotalPages ?  //değilse bak bakalım page toplam sayfadan büyük mü
+                                              ViewBag.TotalPages  // page değeri=toplam sayfa
+                                              :
+                                              page;  //page'e dokunma page aynı değerinden devamkee...
+
+
+
+            ViewBag.CurrentPage = page;//View'de kaçıncı sayfada olduğum bilgiisni tutsun
+
             List<Product>allProducts = new List<Product>();
            
             //var allProducts = myProductRepo.GetAll();
@@ -48,14 +78,7 @@ namespace ECommerceLiteUI.Controllers
                 )
                 .Take(pageSize)//10 take al neden 10?Çünkü yukarıdaki pagesize 10'a eşitmiş
                 .ToList();
-            //Sayfaya bazı bilgiler göndereceğiz
-            var totalProduct = myProductRepo.GetAll().Count;//toplam ürün sayısı
-            ViewBag.TotalProduct = totalProduct;//toplam ürün sayısını sayfaya göndereceğiz
-            ViewBag.TotalPages = (int)Math.Ceiling(totalProduct/(double)pageSize);
-                
-                //toplamürün/sayfada gösterilecek üründen kaç sayfa olduğu bilgisi
-            ViewBag.PageSize = pageSize;//Her sayfada kaç ürün gözükecek bilgisini html sayfasına gönderelim
-            ViewBag.CurrentPage = page;//View'de kaçıncı sayfada olduğum bilgiisni tutsun
+          
 
             return View(allProducts);
 
@@ -151,7 +174,7 @@ namespace ECommerceLiteUI.Controllers
                 {
                     //Sıfırdan büyükse product tabloya eklendi.
                     //Acaba bu producta resim seçmiş mi?resim seçtiyse o resimlerin yollarını kaydet 
-                    if (model.Files.Any())
+                    if (model.Files.Any() && model.Files[0] !=null)
                     {
                         ProductPicture productPicture = new ProductPicture();
                         productPicture.ProductId = product.Id;
