@@ -24,6 +24,9 @@ namespace ECommerceLiteUI.Controllers
        //Buarada ürünlerin listelenmesi ,ekleme,silme,güncelleme işlemleri yapılacaktır.
         public ActionResult ProductList(string search="")
         {
+            //Alt Kategorileri repo aracılığıyla dbden çektik
+            ViewBag.SubCategories = myCategoryRepo
+                .AsQueryable().Where(x => x.BaseCategoryId != null).ToList();
             List<Product>allProducts = new List<Product>();
            
             //var allProducts = myProductRepo.GetAll();
@@ -103,25 +106,25 @@ namespace ECommerceLiteUI.Controllers
                 //Ürün tabloya kayıt olacak .
                 //TODO:Mapleme yapılacak
 
-                //Product product = new Product()
-                //{
-                //    ProductName=model.ProductName,
-                //    Description=model.Description,
-                //    ProductCode=model.ProductCode,
-                //    CategoryId=model.CategoryId,
-                //    Discount=model.Discount,
-                //    Quantity=model.Quantity,
-                //    RegisterDate=DateTime.Now,
-                //    Price=model.Price
+                Product product = new Product()
+                {
+                    ProductName = model.ProductName,
+                    Description = model.Description,
+                    ProductCode = model.ProductCode,
+                    CategoryId = model.CategoryId,
+                    Discount = model.Discount,
+                    Quantity = model.Quantity,
+                    RegisterDate = DateTime.Now,
+                    Price = model.Price
 
-                //};
+                };
                 //mapleme yapıldı
                 //Mapster paketi indirildi.Mapster bir objedeki verileri diğer bir objeye zahmetsizce aktarır.
                 //Aktarım yapabilmesi için A objesiyl B objesinin içindeki propertylerin isimleri ve tipleri birebir aynı olmalıdır.
                 //bu projede mapster kullandık
                 //Core projesınde daha profesyenel olan AutoMapper'ı kullanacagız
                 //bir dto objesinin içindeki verileri alır asıl objenin içine aktarır.Asıl objenın verılerını dto objesının ıcındekı propertylere aktarır.
-                Product product = model.Adapt<Product>();
+                //Product product = model.Adapt<Product>();
                 //Product product2=model.Adapt<ProductViewModel,Product>();
 
 
@@ -226,6 +229,86 @@ namespace ECommerceLiteUI.Controllers
                 //ex loglanacak
                 return View(model);
                 
+            }
+        }
+
+        public JsonResult GetProductDetails(int id)
+        {
+            try
+            {
+                var product = myProductRepo.GetById(id);
+                if (product!=null)
+                {
+                    //var data = product.Adapt<ProductViewModel>();
+                    var data = new ProductViewModel()
+                    {
+                        Id=product.Id,
+                        ProductName = product.ProductName,
+                        Description = product.Description,
+                        ProductCode = product.ProductCode,
+                        CategoryId = product.CategoryId,
+                        Discount = product.Discount,
+                        Quantity = product.Quantity,
+                        RegisterDate = product.RegisterDate,
+                        Price = product.Price
+
+                    };
+                    return Json(new { iSSuccess =true,data},JsonRequestBehavior.AllowGet);
+
+                }
+                else
+                {
+                    return Json(new { iSSuccess = false });
+                }
+            }
+            catch (Exception)
+            {
+                //ex loglansın
+                return Json(new { iSSuccess = false });
+            }
+        }
+
+        public ActionResult Edit(ProductViewModel model)
+        {
+            try
+            {
+                var product = myProductRepo.GetById(model.Id);
+                if(product!=null)
+                {
+                    product.ProductName = model.ProductName;
+                    product.Description = model.Description;
+                    product.Discount = model.Discount;
+                    product.Quantity = model.Quantity;
+                    product.ProductCode = model.ProductCode;
+                    product.Price = model.Price;
+                    product.CategoryId = model.CategoryId;
+
+                    int updateResult = myProductRepo.Update();
+                    if(updateResult>0)
+                    {
+                        TempData["EditSuccess"] = "Bilgiler başarıyla güncellendi.";
+                        return RedirectToAction("ProductList", "Product");
+                    }
+                    else
+                    {
+                        TempData["EditFailed"] = "Beklenmedik bir hata olduğu için ürün bilgileri sisteme aktarılamadı";
+                        return RedirectToAction("ProductList", "Product");
+                    }
+
+                }
+                else
+                {
+                    TempData["EditFailed"] = "Ürün bulunamadığı için bilgileri güncellenemedi!";
+                    return RedirectToAction("ProductList", "Product");
+                }
+
+            }
+            catch (Exception )
+            {
+
+                //ex loglanacak
+                TempData["EditFailed"] = "Beklenmedik bir hata nedeniyle ürün güncellenemedi!";
+                    return RedirectToAction("ProductList", "Product");
             }
         }
     }

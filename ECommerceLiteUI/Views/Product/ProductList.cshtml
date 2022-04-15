@@ -7,6 +7,22 @@
 
 <h2>Sistemdeki Ürünler</h2>
 <br />
+@if (TempData["EditSuccess"] != null)
+{
+    <div class="callout callout-success">
+        @TempData["EditSuccess"]
+    </div>
+
+}
+@if (TempData["EditFailed"] != null)
+{
+    <div class="callout callout-danger">
+        @TempData["EditFailed"]
+    </div>
+
+}
+
+
 <div class="col-12">
     @using (Html.BeginForm("ProductList", "Product", FormMethod.Get))
     {
@@ -89,7 +105,7 @@
 <div class="modal fade col-md-12" id="myModal" role="dialog">
     <div class="modal-dialog">
         <!--Modal Content Başlangıcı-->
-        
+
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title">Ürün Detay</h4>
@@ -117,6 +133,25 @@
                             <input id="Description" name="Description" class="form-control" />
                         </div>
                         <div class="form-group">
+                            <span class="text-danger" style="font-weight:bold;margin-right:3px">
+                                *
+                            </span>
+                            <label for="Category" style="font-weight:bold;">Kategori</label>
+                            <select id="CategorySelect" name="CategoryId" class="form-control">
+                                @foreach (var item in ViewBag.SubCategories)
+                                {
+                                    <option value="@item.Id">@item.CategoryName</option>
+
+                                }
+                            </select>
+
+
+                        </div>
+
+
+
+
+                        <div class="form-group">
                             @Html.Label("Ürün Kodu: ")
                             <input id="ProductCode" name="ProductCode" class="form-control" />
                         </div>
@@ -137,8 +172,8 @@
                                    data-dismiss="modal" style="float:left" />
                         </div>
                         <div class="form-group">
-                            <input type="button" value="GÜNCELLE" class="btn btn-danger"
-                                   data-dismiss="modal" style="float:right" />
+                            <input type="submit" value="GÜNCELLE" class="btn btn-danger"
+                                   style="float:right" />
                         </div>
                     </div>
                 }
@@ -159,7 +194,42 @@
 @section scripts{
     <script>
         function ProductBtnClicked(id) {
+            console.log(id);
+            //AJAX öğreneceğiz.
 
+            $.ajax({
+                type: "GET",
+                url: '/Product/GetProductDetails/' + id,
+                success: function (res) {
+                    console.log(res);
+                    if (res.iSSuccess) {
+                        //Gelen datayı yukarıdaki popup içindeki inputlara yerleştireceğiz
+                        document.getElementById("ProductName").value = res.data.ProductName;
+
+
+                        //$('#ProductName').val(res.data.ProductName);
+                        $('#Description').val(res.data.Description);
+                        $('#ProductCode').val(res.data.ProductCode);
+                        $('#Price').val(res.data.Price);
+                        $('#Quantity').val(res.data.Quantity);
+                        $('#Discount').val(res.data.Discount);
+                        $('#ProductId').val(res.data.Id);
+                        $('#CategorySelect').val(res.data.CategoryId)
+                    }
+                    else {
+
+                    }
+
+
+                },
+                error: function (err) {
+                    console.log(err);
+                }
+
+
+
+
+            });
         }
     </script>
 }
