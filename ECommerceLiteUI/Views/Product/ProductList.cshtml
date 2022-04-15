@@ -96,6 +96,32 @@
                     }
                 </tbody>
             </table>
+            <br />
+            <div class="row">
+                <div class="text-center col-4 offset-4">
+                    <ul class="pagination">
+                        <li>
+                            <a id="pageprevious" href="@Url.Action("ProductList","Product",
+                                    new {page=ViewBag.CurrentPage-1 })">&laquo;</a>
+                        </li>
+
+                        @for (int i = 1; i <= (int)ViewBag.TotalPages; i++)
+                        {
+                            <li>
+                                <a href="@Url.Action("ProductList","Product",new { page=i })">
+                                    @i
+                                </a>
+                            </li>
+                        }
+
+
+                        <li>
+                            <a id="pagenext" href="@Url.Action("ProductList","Product",
+                                    new {page=ViewBag.CurrentPage-1 })">&raquo;</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
 
         </div>
     </div>

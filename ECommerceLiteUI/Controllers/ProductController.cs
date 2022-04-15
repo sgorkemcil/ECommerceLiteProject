@@ -17,12 +17,13 @@ namespace ECommerceLiteUI.Controllers
         CategoryRepo myCategoryRepo = new CategoryRepo();
         ProductRepo myProductRepo = new ProductRepo();
         ProductPictureRepo myProductPictureRepo = new ProductPictureRepo();
+        private const int pageSize = 5;
 
 
 
        //Bu controllera Admin gibi yetkili kişiler erişecektir.
        //Buarada ürünlerin listelenmesi ,ekleme,silme,güncelleme işlemleri yapılacaktır.
-        public ActionResult ProductList(string search="")
+        public ActionResult ProductList(int? page = 1, string search = "")
         {
             //Alt Kategorileri repo aracılığıyla dbden çektik
             ViewBag.SubCategories = myCategoryRepo
@@ -39,9 +40,26 @@ namespace ECommerceLiteUI.Controllers
                 allProducts = myProductRepo.GetAll()
                     .Where(x => x.ProductName.Contains(search) || x.Description.Contains(search)).ToList();
             }
+
+            //Paging-->1.yöntem bu yontem en klasık yontemdir.
+            allProducts = allProducts.Skip(
+                (page.Value < 1 ? 1 : page.Value - 1)
+                * pageSize
+                )
+                .Take(pageSize)//10 take al neden 10?Çünkü yukarıdaki pagesize 10'a eşitmiş
+                .ToList();
+            //Sayfaya bazı bilgiler göndereceğiz
+            var totalProduct = myProductRepo.GetAll().Count;//toplam ürün sayısı
+            ViewBag.TotalProduct = totalProduct;//toplam ürün sayısını sayfaya göndereceğiz
+            ViewBag.TotalPages = (int)Math.Ceiling(totalProduct/(double)pageSize);
+                
+                //toplamürün/sayfada gösterilecek üründen kaç sayfa olduğu bilgisi
+            ViewBag.PageSize = pageSize;//Her sayfada kaç ürün gözükecek bilgisini html sayfasına gönderelim
+            ViewBag.CurrentPage = page;//View'de kaçıncı sayfada olduğum bilgiisni tutsun
+
             return View(allProducts);
 
-        }
+        }                                                                                                                                                                                                                                                                                                                        
         [HttpGet]
         public ActionResult Create()
         {
