@@ -18,5 +18,6 @@ namespace ECommerceLiteEntity.Models
         [Required]
         [Column(Order = 2)]
         public DateTime RegisterDate { get; set; } = DateTime.Now;
+        public bool IsDeleted { get; set; } = false;
     }
 }

@@ -34,6 +34,7 @@ namespace ECommerceLiteEntity.IdentityModels
 
         //ToDo:Guid'in kaç haneli olduğuna bakıp burayya string Length ile attribute tanımlanacaktır.
         public string ActivationCode { get; set; }
+        public bool IsDeleted { get; set; } = false;
 
         //İsteyen birthDate gibi bir alan da ekleyebilir.
 

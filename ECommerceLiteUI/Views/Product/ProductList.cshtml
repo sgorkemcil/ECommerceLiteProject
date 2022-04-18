@@ -7,6 +7,16 @@
 
 <h2>Sistemdeki Ürünler</h2>
 <br />
+
+@if (TempData["ProductInsertSuccess"] != null)
+{
+    <div class="callout callout-success">@TempData["ProductInsertSuccess"]</div>
+}
+@if (TempData["ProductInsertWarning"] != null)
+{
+    <div class="callout callout-warning">@TempData["ProductInsertWarning"]</div>
+}
+
 @if (TempData["EditSuccess"] != null)
 {
     <div class="callout callout-success">

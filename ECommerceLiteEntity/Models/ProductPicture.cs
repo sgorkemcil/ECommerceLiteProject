@@ -14,16 +14,8 @@ namespace ECommerceLiteEntity.Models
         public int ProductId { get; set; }
 
         [StringLength(400, ErrorMessage = "Ürün resim yolu en fazla 400 karakter olmalıdır!")]
-        public string ProductPicture1 { get; set; }
-        [StringLength(400, ErrorMessage = "Ürün resim yolu en fazla 400 karakter olmalıdır!")]
-        public string ProductPicture2 { get; set; }
-
-        [StringLength(400, ErrorMessage = "Ürün resim yolu en fazla 400 karakter olmalıdır!")]
-        public string ProductPicture3 { get; set; }
-        [StringLength(400, ErrorMessage = "Ürün resim yolu en fazla 400 karakter olmalıdır!")]
-        public string ProductPicture4 { get; set; }
-        [StringLength(400, ErrorMessage = "Ürün resim yolu en fazla 400 karakter olmalıdır!")]
-        public string ProductPicture5 { get; set; }
+        public string Picture { get; set; }
+       
         [ForeignKey("ProductId")]
         public virtual Product Product { get; set; }
 
