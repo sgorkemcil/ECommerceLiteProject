@@ -79,7 +79,7 @@ namespace ECommerceLiteUI.Controllers
                 .Take(pageSize)//10 take al neden 10?Çünkü yukarıdaki pagesize 10'a eşitmiş
                 .ToList();
           
-
+            
             return View(allProducts);
 
         }                                                                                                                                                                                                                                                                                                                        
@@ -126,7 +126,7 @@ namespace ECommerceLiteUI.Controllers
                     return View(model);
                 }
                 
-                if (model.CategoryId<=0 || model.CategoryId>myCategoryRepo.GetAll().Count())
+                if (model.CategoryId<=0 )
                 {
                     ModelState.AddModelError("", "Ürüne ait kategori seçilmelidir.!");
                     return View(model);
@@ -205,19 +205,19 @@ namespace ECommerceLiteUI.Controllers
                                     $"{productName}-{guid}{extensionName}",
                                     IsDeleted = false
                                 };
-                                pictureinsertResult = myProductPictureRepo.Insert(picture);
+                                pictureinsertResult += myProductPictureRepo.Insert(picture);
                                 
                             }
 
                         }
                         //pictureinsertResult kontrol edilecektir.
-                        if (insertResult>0 && model.Files.Count==insertResult)
+                        if (pictureinsertResult>0 && model.Files.Count==pictureinsertResult)
                         {
                             //Bütün resimler eklenmiş
                             TempData["ProductInsertSuccess"] = "Yeni ürün eklenmiştir.";
                             return RedirectToAction("ProductList", "Product");
                         }
-                        else if(insertResult>0 && model.Files.Count!=insertResult)
+                        else if(pictureinsertResult>0 && model.Files.Count!=pictureinsertResult)
                         {
                             //eksik eklemiş
                             TempData["ProductInsertWarning"] = "Yeni ürün eklendi ama resimlerden bazıları beklenmedik bir sorun yüzünden eklenemedi!Eklenilenemeyen resimleri daha sonra tekrar ekleyiniz.";
