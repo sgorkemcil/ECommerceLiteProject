@@ -12,6 +12,8 @@ using Mapster;
 
 namespace ECommerceLiteUI.Controllers
 {
+    [Authorize(Roles = "Admin")]
+
     public class ProductController : Controller
     {                                                                                                                                                                                                                                                
         CategoryRepo myCategoryRepo = new CategoryRepo();
