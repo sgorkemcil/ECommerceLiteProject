@@ -1,11 +1,11 @@
-﻿using ECommerceLiteEntity.Models;
+﻿using ECommerceLiteBLL.Repository;
+using ECommerceLiteEntity.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Web;
-using ECommerceLiteBLL.Repository;
 
 namespace ECommerceLiteUI.Models
 {
@@ -75,26 +75,26 @@ namespace ECommerceLiteUI.Models
                         (Category.BaseCategoryId.Value);
                     Category.CategoryList.Add(Category.BaseCategory);
 
-                    bool isOver = false;
-                    Category baseCategory = Category.BaseCategory;
-                    while (!isOver)
-                    {
-                        if (baseCategory.BaseCategoryId > 0)
-                        {
+                    //bool isOver = false;
+                    //Category baseCategory = Category.BaseCategory;
+                    //while (!isOver)
+                    //{
+                    //    if (baseCategory.BaseCategoryId > 0)
+                    //    {
 
-                            Category.CategoryList.Add(
-                                myCategoryRepo.GetById
-                                (baseCategory.BaseCategoryId.Value));
+                    //        Category.CategoryList.Add(
+                    //            myCategoryRepo.GetById
+                    //            (baseCategory.BaseCategoryId.Value));
 
-                            baseCategory = myCategoryRepo.GetById(
-                                baseCategory.BaseCategoryId.Value);
-                        }
-                        else
-                        {
-                            isOver = true;
-                        }
+                    //        baseCategory = myCategoryRepo.GetById(
+                    //            baseCategory.BaseCategoryId.Value);
+                    //    }
+                    //    else
+                    //    {
+                    //        isOver = true;
+                    //    }
 
-                    }
+                    //}
 
                     Category.CategoryList =
                         Category.CategoryList.OrderBy(x => x.Id).ToList();
@@ -106,6 +106,4 @@ namespace ECommerceLiteUI.Models
 
 
     }
-
-
 }
