@@ -40,6 +40,6 @@ namespace ECommerceLiteEntity.Models
         public double Discount { get; set; }
         [Required]
         [DataType(DataType.Currency)]
-        public double TotalPrice { get; set; }
+        public decimal TotalPrice { get; set; }
     }
 }
