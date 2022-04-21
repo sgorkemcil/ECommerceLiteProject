@@ -203,7 +203,7 @@ namespace ECommerceLiteUI.Controllers
                                 {
                                     ProductId = product.Id,
                                     RegisterDate = DateTime.Now,
-                                    Picture = $"~/ProductPictures/{productName}/{model.ProductCode}" +
+                                    Picture = $"/ProductPictures/{productName}/{model.ProductCode}" +
                                     $"{productName}-{guid}{extensionName}",
                                     IsDeleted = false
                                 };
