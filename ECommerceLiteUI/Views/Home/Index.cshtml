@@ -8,21 +8,21 @@
 
 @if (TempData["AddToCartSuccess"] != null)
 {
-    <div class="callout callout-success">@TempData["AddToCartSuccess"]</div>
+    <div class="alert alert-success">@TempData["AddToCartSuccess"]</div>
 }
 
 @if (TempData["AddToCartFailed"] != null)
 {
-    <div class="callout callout-danger">@TempData["AddToCartFailed"]</div>
+    <div class="alert alert-danger">@TempData["AddToCartFailed"]</div>
 }
 @if (TempData["BuySuccess"] != null)
 {
-    <div class="callout callout-success">@TempData["BuySuccess"]</div>
+    <div class="alert alert-success">@TempData["BuySuccess"]</div>
 }
 
 @if (TempData["BuyFailed"] != null)
 {
-    <div class="callout callout-danger">@TempData["BuyFailed"]</div>
+    <div class="alert alert-danger">@TempData["BuyFailed"]</div>
 }
 <!-- section title -->
 <div class="col-md-12">

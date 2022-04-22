@@ -15,6 +15,7 @@ using ECommerceLiteEntity.Enums;
 using System.Threading.Tasks;
 using ECommerceLiteEntity.ViewModels;
 using Microsoft.Owin.Security;
+using ECommerceLiteUI.LogManaging;
 
 namespace ECommerceLiteUI.Controllers
 {
@@ -476,11 +477,12 @@ namespace ECommerceLiteUI.Controllers
                 //Herkes rolüne uygun default bir sayfaya gitsin 
                 if (user.Roles.FirstOrDefault().RoleId==myRoleManager.FindByName(Enum.GetName(typeof(Roles),Roles.Admin)).Id)
                 {
+                    Logger.LogMessage("Sisteme bir admin girdi.", "Account/Login", user.Id);
                     return RedirectToAction("Dashboard", "Admin");
                 }
                 if (user.Roles.FirstOrDefault().RoleId == myRoleManager.FindByName(Enum.GetName(typeof(Roles), Roles.Customer)).Id)
                 {
-
+                    Logger.LogMessage("Sisteme bir admin girdi.", "Account/Login", user.Id);
                     return RedirectToAction("Index", "Home");
                 }
                 if (string.IsNullOrEmpty(model.ReturnUrl))
@@ -505,6 +507,7 @@ namespace ECommerceLiteUI.Controllers
             catch (Exception ex)
             {
                 //ex loglanacak
+                Logger.LogMessage($"Giriş yaparken hata olmuş:\n{ex.ToString()}", "Account/Login", model.Email);
                 ModelState.AddModelError("", "Beklenmedik hata oluştu! Tekrar Deneyiniz.!");
                 return View(model);
             }
