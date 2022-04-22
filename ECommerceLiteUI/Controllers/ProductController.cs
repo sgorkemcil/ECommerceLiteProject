@@ -28,8 +28,7 @@ namespace ECommerceLiteUI.Controllers
         public ActionResult ProductList(int? page = 1, string search = "")
         {
             //Alt Kategorileri repo aracılığıyla dbden çektik
-            ViewBag.SubCategories = myCategoryRepo
-                .AsQueryable().Where(x => x.BaseCategoryId != null).ToList();
+            ViewBag.SubCategories = GetSubCategories();
             //Sayfaya bazı bilgiler göndereceğiz
             var totalProduct = myProductRepo.GetAll().Count;//toplam ürün sayısı
             ViewBag.TotalProduct = totalProduct;//toplam ürün sayısını sayfaya göndereceğiz
@@ -94,7 +93,7 @@ namespace ECommerceLiteUI.Controllers
             //select*from Categories where BaseCategoryId is not null
             List<SelectListItem> subCategories = new List<SelectListItem>();
             
-            myCategoryRepo.AsQueryable().Where(x => x.BaseCategoryId != null).ToList().ForEach(x => subCategories.Add(new SelectListItem()
+            GetSubCategories().ForEach(x => subCategories.Add(new SelectListItem()
             {
                 Text = x.CategoryName,
                 Value = x.Id.ToString()
@@ -113,7 +112,7 @@ namespace ECommerceLiteUI.Controllers
             {
                 List<SelectListItem> subCategories = new List<SelectListItem>();
 
-                myCategoryRepo.AsQueryable().Where(x => x.BaseCategoryId != null).ToList().ForEach(x => subCategories.Add(new SelectListItem()
+                GetSubCategories().ForEach(x => subCategories.Add(new SelectListItem()
                 {
                     Text = x.CategoryName,
                     Value = x.Id.ToString()
@@ -298,7 +297,7 @@ namespace ECommerceLiteUI.Controllers
             try
             {
                 var product = myProductRepo.GetById(model.Id);
-                if(product!=null)
+                if (product != null)
                 {
                     product.ProductName = model.ProductName;
                     product.Description = model.Description;
@@ -309,7 +308,7 @@ namespace ECommerceLiteUI.Controllers
                     product.CategoryId = model.CategoryId;
 
                     int updateResult = myProductRepo.Update();
-                    if(updateResult>0)
+                    if (updateResult > 0)
                     {
                         TempData["EditSuccess"] = "Bilgiler başarıyla güncellendi.";
                         return RedirectToAction("ProductList", "Product");
@@ -328,13 +327,40 @@ namespace ECommerceLiteUI.Controllers
                 }
 
             }
-            catch (Exception )
+            catch (Exception)
             {
 
                 //ex loglanacak
                 TempData["EditFailed"] = "Beklenmedik bir hata nedeniyle ürün güncellenemedi!";
-                    return RedirectToAction("ProductList", "Product");
+                return RedirectToAction("ProductList", "Product");
             }
         }
+
+            public List<Category> GetSubCategories()
+            {
+            //Alt kategorisi olmasına rağmen, product ekleme sayfasındaki comboya gelen kategoriler var.Bu bugı bir metot ekleyerek çözümledik.
+            //Mateoda kategorinin id si kategori tablosunda basacategoryid alanında geçiyorsa continue ile o kategoriyi atladık ve listemize
+            //almadık.Böylece sadece çocuk kategoriler gelecektir.Ebeveyn kategoriler sayfaya gelemeyecektir.
+                //eğer caterpo.asq().where(x => x.bas == id)
+                //continue;
+            List<Category> returnList = new List<Category>();
+                var categoryList = myCategoryRepo.AsQueryable().Where(x => x.BaseCategoryId != null).ToList();
+                foreach (var item in categoryList)
+                {
+                    if (myCategoryRepo.AsQueryable().Count(x => x.BaseCategoryId == item.Id) > 0)
+                    {
+                        continue;
+                    }
+                    else
+                    {
+                        returnList.Add(item);
+                    }
+                }
+
+
+                return returnList;
+            }
+        }
+        
+
     }
-}

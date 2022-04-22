@@ -26,55 +26,52 @@ namespace ECommerceLiteUI
 
             try
             {
-                Logger.LogMessage("***********APPLICATION STARTED****************");
-                #region CreateRoles_RolleriOlustur
 
-                //NOT:Application_Start:
+                Logger.LogMessage("*******************APPLICATION STARTED*********************");
+                #region CreateRoles_RolleriOlustur
+                //NOT: Application_Start :
                 //Uygulama ilk kez çalıştırıldığında bir defaya mahsus olmak üzere çalışır.
-                //Bu nedenle ben uyg.ilk kez çalıştığında DB'de Roller ekli mi diye bakmak istiyorum.
-                //Ekli değilse rolleri Enum'dan çağırıp ekleyelim.
+                //Bu nedenle ben uyg. ilk kez çalıştığında DB'de Roller ekli mi diye bakmak istiyorum.
+                //Ekli değilse rolleri Enum'dan çağırıp ekleyelim
                 //Ekli ise bişey yapmaya gerek kalmıyor.
 
-                //adım 1:Rollere bakacağım şey-->Role Manager
+                //adım 1: Rollere bakacağım şey --> Role Manager
                 var myRoleManager = MembershipTools.NewRoleManager();
-                //adım 2:Rollerin isimlerini almak(ipucu-->Enum)
+                //adım 2: Rollerin isimlerini almak (ipucu --> Enum)
                 var allRoles = Enum.GetNames(typeof(Roles));
-                //adım 3 :Bize gelen diziyi tek tek tek döneceğiz(döngü)
+                //adım 3: Bize gelen diziyi tek tek tek döneceğiz (döngü)
                 foreach (var item in allRoles)
                 {
-                    //adım 4 :Acaba bu rol DB'de ekli mi ?
-                    if (!myRoleManager.RoleExists(item))//Eğer bu rol ekli değilse?
+                    //adım 4: Acaba bu rol DB'de ekli mi? 
+                    if (!myRoleManager.RoleExists(item)) // Eğer bu role ekli değilse?
                     {
-                        //Adım 5:Rolü ekle!
-                        //1.Yol
+                        //Adım 5: Rolü ekle!
+                        //1.yol
                         ApplicationRole role = new ApplicationRole()
                         {
                             Name = item,
                             IsDeleted = false
-
                         };
                         myRoleManager.Create(role);
-
-                        //2.Yol
-
+                        //2.yol
                         //myRoleManager.Create(new ApplicationRole()
                         //{
                         //    Name = item
-
                         //});
-                    }
 
+                    }
                 }
 
                 #endregion
-                #region CreateDefaultAdmin_SitemAdminiOlustur
-                //NOT: Proje ılk ayaga kalktıgında arka planda default admin kullanısı ekleyelim
-                //NOT:Kendi isminizle admin olarak kayıt olmanız için Admin register sayfası zaman kısıtlılıgından yapamadık.Geniş bir zamanda eklenebilir.
+
+                #region CreateDefaultAdmin_SistemAdminiOlustur
+                //NOT: Proje ilk ayağa kalkığında arka planda default admin kullanıcısı ekeleylim
+                //NOT: Kendi isminizle admin olarak kayıt olmanız için Admin register sayfası zaman kısıtlılığından yapamadık. Geniş bir zamanda eklenebilir.
 
                 var myUserManager = MembershipTools.NewUserManager();
                 var allUsers = myUserManager.Users;
                 AdminRepo myAdminRepo = new AdminRepo();
-                if (myAdminRepo.GetAll().Count == 0)//hiç admin yoksa ekleyelim
+                if (myAdminRepo.GetAll().Count == 0) // Hiç admin yoksa ekleyelim
                 {
                     ApplicationUser adminUser = new ApplicationUser()
                     {
@@ -99,44 +96,44 @@ namespace ECommerceLiteUI
                         };
                         myAdminRepo.Insert(admin);
                     }
+
                 }
 
 
                 #endregion
             }
-            catch (Exception ex )
+            catch (Exception ex)
             {
 
-                Logger.LogMessage(ex.ToString(),"Application_Start","system");
+                Logger.LogMessage(ex.ToString(), "Application_Start", "system");
+
+                //ex loglanacak
+
+                Logger.LogMessage(ex.ToString(), "Application_Error");
             }
 
-        }
 
-              
-             
+        }
         protected void Application_Error()
         {
-            //NOT:İhtiyacım olursa internetten Global.asax'ın metotlarına bakıp kullanabilirim
-            //ÖRN:Application_Error:Uygulama içinde istenmeyen bir hata meydana geldiğinde çalışır.Bu metodu yazarsak o hatayı loglayıp sorunu çözebilirsiniz.
+            //NOT: ihtiyacım olursa internetten Global.asax'ın metotlarına bakıp kullanabilirim
+            //ÖRN: Application_Error : Uygulama içinde istenmeyen bir hata meydana geldiğinde çalışır. Bu metodu yazarsak o hatayı loglayıp sorunu çözebiliriz.
 
             Exception ex = Server.GetLastError();
             //ex loglanacak
-            Logger.LogMessage(ex.ToString(), "Application_Error");
         }
         protected void Application_End()
         {
-            Logger.LogMessage("*********APPLICATION FINISHED************");
+            Logger.LogMessage("******************APLICATON FINISHED**************");
         }
+
         protected void Session_Start(object sender, EventArgs e)
         {
             Logger.LogMessage("Session Started." + sender.ToString());
-
         }
-
         protected void Session_End(object sender, EventArgs e)
         {
             Logger.LogMessage("Session Ended." + sender.ToString());
-
         }
     }
 }
