@@ -326,5 +326,38 @@ namespace ECommerceLiteUI.Controllers
                 return RedirectToAction("Index", "Home");
             }
         }
+
+        public ActionResult ProductDetail(int? id)
+        {
+            try
+            {
+                if (id==null)
+                {
+                    return RedirectToAction("Index", "Home");
+                }
+                if (id>0)
+                {
+                    //ürünü bulacağız
+                    ProductViewModel model = myProductRepo
+                        .GetById(id.Value).Adapt<ProductViewModel>();
+                    model.GetCategory();
+                    model.GetProductPictures();
+                    return View(model);
+
+                }
+                else
+                {
+                    ModelState.AddModelError("", "Ürün Bulunamadı!");
+                    return View(new ProductViewModel());
+                }
+
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", "Beklenmeyen bir hata oluştu!");
+
+                throw;
+            }
+        }
     }
 }

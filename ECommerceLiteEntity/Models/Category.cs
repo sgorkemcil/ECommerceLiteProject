@@ -24,16 +24,17 @@ namespace ECommerceLiteEntity.Models
         //oluşturmuş oluruz
         //public Nullable<int> BaseCategoryId {get;set;}
         
-        [ForeignKey("BaseCategoryId")]
-        public virtual Category BaseCategory { get; set; }
+        //[ForeignKey("BaseCategoryId")]
+        //public virtual Category BaseCategory { get; set; }
 
-        public virtual List<Category>CategoryList { get; set; }
+        //public virtual List<Category>CategoryList { get; set; }
 
         //Her ürünün bir kategorisi olur cumlesınden yola cıkarak Productta tanımlanan ilişkiyi burada karşılayalım
         /*1'e sonsuz ilişki nedeniyle yeni bir kategorinin birden cok urunu olabilir mantıgını karsılamak amacıyla  burda
         virtual InversePropertyAttribute list tipindedir.*/
 
         public virtual List<Product>ProductList { get; set; }
+        
         
     }
 }
