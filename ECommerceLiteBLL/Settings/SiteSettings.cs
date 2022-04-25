@@ -7,13 +7,16 @@ using System.Net.Mime;
 using System.Text;
 using System.Threading.Tasks;
 using ECommerceLiteEntity.ViewModels;
+using ECommerceLiteUtilities;
 
 namespace ECommerceLiteBLL.Settings
 {
     public class SiteSettings
     {
         //To Do:Mail adresini webconfig dosyasından cekmeyı de ogrenelım 
-        public static string SiteMail { get; set; } = "nayazilim303@gmail.com";
+        //public static string SiteMail { get; set; } = "nayazilim303@gmail.com";
+        public static string SiteMail { get; set; } = Utility.DefaultProjectEmail;
+            
         public static string SiteMailPassword { get; set; } = "betul303303";
         public static string SiteMailSmtpHost { get; set; } = "smtp.gmail.com";
         public static int SiteMailSmtpPort { get; set; } = 587;
